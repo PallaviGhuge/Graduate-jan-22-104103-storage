@@ -1,0 +1,119 @@
+
+
+1.	Select the American directors ordered from oldest to youngest.
+A=      select * from directors where nationality='American' order by date_of_birth asc;
+
+===========================================================
+
+2.	Return the sistinct nationalities from the directors table.
+A=	select distinct(nationality) from directors;
+
+==============================================================
+
+3.	Return the first names, last names and date of births of the 10 youngest female actors.
+A=	select first_name,last_name,date_of_birth from actors where gender='F' order by date_of_birth desc limit 10;
+
+==============================================================
+
+4.	Return the top 3 movies with the highest international takings.
+A=	select * from movie_revenues order by international_takings desc limit 3;
+
+============================================================
+
+5.	Concatenate the first and last names of the directors spearated by a space, and call this new column full_name.
+A=	select first_name ||' '||last_name as full_name from directors;
+
+=============================================================
+
+6.	Return the actors with missing first_names or data_of_births.
+A=	select * from actors WHERE first_name is null OR date_of_birth is null;
+
+
+=================================================================
+
+7.	Count the number of actors born after the 1st January 1970.
+A=	select count(*) from actors where date_of_birth>'1970-01-01';
+
+=================================================================
+
+8.	What was the highest and lowest domestic takings for a movie.
+A=      select max(domestic_takings),min(domestic_takings) from movie_revenues;
+OR	select MIN(domestic_takings) AS "Lowest_takings", MAX(domestic_takings) AS "Highest_takings" FROM movie_revenues;
+
+===============================================================
+
+9.	What is the sum total movie length for movies rated 15.
+A=	select SUM(movie_length) FROM movies WHERE age_certificate='15';
+
+=================================================================
+
+10.	How many Japanese directors are in the directors table.
+A=	select count(*) from directors where nationality='Japanese';
+
+===============================================================
+
+11.	What is the average movie length for chinese movies.
+A=	select avg(movie_length) from movies where movie_lang='Chinese';
+
+=============================================================
+
+12.	How many directors are there per nationality?
+A-	select nationality,count(*) from directors group by nationality;
+OR	SELECT COUNT(*), nationality FROM directors GROUP BY nationality
+
+============================================================
+
+13.	What is the sum total movie_length for each age certificate and movie language combination?
+A=	SELECT SUM(movie_length), age_certificate, movie_lang FROM movies GROUP BY age_certificate, movie_Lang;
+
+=============================================================
+14.	Return the movie languages which have a sum total movie length of over 500 minutes.
+A=	SELECT movie_lang FROM movies GROUP BY movie_lang HAVING SUM(movie_length) > 500;
+
+=========================================================================
+15.	Select the directors first and last names, the movie names, and release dates for all Chinese, Korean, and Japanese movies.
+A=	SELECT first_name, last_name, movie_name, release_date FROM directors INNER JOIN movies
+	ON directors.director_id = movies.director_id
+	WHERE movie_lang IN ('Chinese', 'Korean', 'Japanese');
+
+==================================================================
+16.	Select the movie names, release dates & international takings of all English language movies.
+A=	SELECT movie_name, release_date, international_takings FROM movies
+	NATURAL JOIN movie_revenues
+	WHERE movie_lang = 'English';
+
+==========================================================
+17.	Select the movie names, domestic takings and international takings for all movies with either missing
+	domestic takings or missing international takings and order the results by movie name.	
+A=	SELECT movie_name, domestic_takings,international_takings FROM movies NATURAL JOIN movie_revenues
+	 WHERE international_takings IS NULL ORDER BY movie_name;
+
+==========================================================
+18.	Use left join to select the first and last names of all British directors
+	 and the names and age certificates of the movies that they directed.
+A=	select first_name,last_name,movie_name,age_certificate from directors left join movies 
+	on movies.director_id = directors.director_id
+	where nationality = 'British';
+
+=================================================================
+19.	Count the number of movies that each director has directed.
+A=	SELECT first_name || ' ' || last_name AS full_name, COUNT(movie_id) FROM directors
+	NATURAL JOIN movies GROUP BY director_id;
+
+==================================================================
+20.	Select the first names, last names and dates of birth from directors & actors table.
+	Order the result by the date of birth.
+A=	SELECT first_name, last_name, date_of_birth FROM directors UNION
+	SELECT first_name, last_name, date_of_birth FROM actors
+	ORDER BY date_of_birth ;
+
+==================================================================
+21.	Select the first and last names of all directors and actors born in the 1960s. Order the result by last name.
+A=	SELECT first_name, last_name
+	FROM directors
+	WHERE date_of_birth BETWEEN '1960-01-01' AND '1969-12-31'
+	UNION
+	SELECT first_name, last_name
+	FROM actors
+	WHERE date_of_birth BETWEEN '1960-01-01' AND '1969-12-31'
+	ORDER BY last_name;
